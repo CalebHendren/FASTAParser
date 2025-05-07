@@ -9,11 +9,24 @@ pub fn run<P: AsRef<Path>, W: Write>(
     format: &str,
     mut out: W,
 ) -> io::Result<()> {
-    let recs = parser::parse_fasta(input.as_ref())?;
+    // parse_fasta returns io::Result<Vec<Record>>
+    let records = parser::parse_fasta(input.as_ref())?;
+
     match format {
-        "json" => writer::write_json(&mut out, &recs)?,
-        "csv"  => writer::write_csv(&mut out, &recs)?,
-        _      => writer::write_fasta(&mut out, &recs)?,
+        "json" => writer::write_json(&mut out, &records)
+            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?,
+
+        "csv" => writer::write_csv(&mut out, &records)
+            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?,
+
+        "tsv" => writer::write_tsv(&mut out, &records)
+            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?,
+
+        "xml" => writer::write_xml(&mut out, &records)?,
+
+        // treat both `.fasta` and anything else as FASTA
+        "fasta" | _ => writer::write_fasta(&mut out, &records)?,
     }
+
     Ok(())
 }
