@@ -4,6 +4,6 @@ Usage:
 
 cargo run -- <input_file> [<output_file>] [--gc]
 
-Supports csv, tsv, xml, and json outputs
+Supports csv, tsv, xml, and json inputs/outputs!
 
 The optional --gc flag gives the gc%.
