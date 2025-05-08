@@ -26,7 +26,7 @@ pub fn write_csv<W: Write>(w: &mut W, records: &[Record]) -> csv::Result<()> {
     Ok(())
 }
 
-/// TSV (Tab-separated values)
+/// TSV
 pub fn write_tsv<W: Write>(w: &mut W, records: &[Record]) -> csv::Result<()> {
     let mut wtr = csv::WriterBuilder::new()
         .delimiter(b'\t')
@@ -39,7 +39,7 @@ pub fn write_tsv<W: Write>(w: &mut W, records: &[Record]) -> csv::Result<()> {
     Ok(())
 }
 
-/// XML (very basic)
+/// XML
 pub fn write_xml<W: Write>(w: &mut W, records: &[Record]) -> io::Result<()> {
     writeln!(w, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")?;
     writeln!(w, "<records>")?;

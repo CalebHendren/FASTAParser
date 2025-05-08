@@ -1,6 +1,7 @@
 pub mod models;
 pub mod parser;
 pub mod writer;
+pub mod converter;
 pub mod gc;
 use std::path::Path;
 use std::io::{self, Write};
