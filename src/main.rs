@@ -2,10 +2,11 @@ use clap::Parser;
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::PathBuf;
-
 use FASTAParser::{
     converter::{from_csv, from_json, from_tsv, from_xml},
     gc::run_gc,
+    parser,
+    stats::run_stats,
     writer::{write_csv, write_fasta, write_json, write_tsv, write_xml},
     models::Record,
 };
@@ -13,25 +14,33 @@ use FASTAParser::{
 #[derive(Parser)]
 #[command(author, version, about)]
 struct Args {
-    /// Input file path (any supported format)
     input: PathBuf,
-
-    /// Optional output file path (stdout if omitted)
+    /// Optional output file path
     output: Option<PathBuf>,
-
     /// Compute and print GC content only
     #[arg(long)]
     gc: bool,
+    /// Generate length & GC% stats & plots
+    #[arg(long)]
+    stats: bool,
 }
 
-fn main() -> io::Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
-    if args.gc {
-        return run_gc(&args.input);
+    // stats
+    if args.stats {
+        run_stats(&args.input)?;
+        return Ok(());
     }
 
-    // Detect input format
+    // GC
+    if args.gc {
+        run_gc(&args.input)?;
+        return Ok(());
+    }
+
+    // Convert
     let input_ext = args
         .input
         .extension()
@@ -40,13 +49,11 @@ fn main() -> io::Result<()> {
         .to_lowercase();
 
     let records: Vec<Record> = match input_ext.as_str() {
-        "json" => from_json(args.input.to_str().unwrap()).expect("Invalid JSON"),
-        "csv"  => from_csv(args.input.to_str().unwrap()).expect("Invalid CSV"),
-        "tsv"  => from_tsv(args.input.to_str().unwrap()).expect("Invalid TSV"),
-        "xml"  => from_xml(args.input.to_str().unwrap()).expect("Invalid XML"),
-        "fasta" | "fa" | "fna" => {
-            FASTAParser::parser::parse_fasta(&args.input)?
-        }
+        "json" => from_json(args.input.to_str().unwrap()).map_err(|e| e.to_string())?,
+        "csv" => from_csv(args.input.to_str().unwrap()).map_err(|e| e.to_string())?,
+        "tsv" => from_tsv(args.input.to_str().unwrap()).map_err(|e| e.to_string())?,
+        "xml" => from_xml(args.input.to_str().unwrap()).map_err(|e| e.to_string())?,
+        "fasta" | "fa" | "fna" => parser::parse_fasta(&args.input)?,
         _ => {
             eprintln!("Unsupported input format: {}", input_ext);
             std::process::exit(1);
@@ -68,10 +75,10 @@ fn main() -> io::Result<()> {
     };
 
     match output_ext.as_str() {
-        "json" => write_json(&mut writer, &records).expect("Failed to write JSON"),
-        "csv"  => write_csv(&mut writer, &records).expect("Failed to write CSV"),
-        "tsv"  => write_tsv(&mut writer, &records).expect("Failed to write TSV"),
-        "xml"  => write_xml(&mut writer, &records).expect("Failed to write XML"),
+        "json" => write_json(&mut writer, &records)?,
+        "csv" => write_csv(&mut writer, &records)?,
+        "tsv" => write_tsv(&mut writer, &records)?,
+        "xml" => write_xml(&mut writer, &records)?,
         "fasta" | "fa" | "fna" => write_fasta(&mut writer, &records)?,
         _ => {
             eprintln!("Unsupported output format: {}", output_ext);

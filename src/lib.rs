@@ -3,6 +3,7 @@ pub mod parser;
 pub mod writer;
 pub mod converter;
 pub mod gc;
+pub mod stats;
 use std::path::Path;
 use std::io::{self, Write};
 

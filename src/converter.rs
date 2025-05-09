@@ -39,7 +39,7 @@ pub fn from_tsv(path: &str) -> csv::Result<Vec<Record>> {
     Ok(records)
 }
 
-/// Parse XML to Records (very basic)
+/// Parse XML to Records
 pub fn from_xml(path: &str) -> io::Result<Vec<Record>> {
     let content = std::fs::read_to_string(path)?;
     let mut records = Vec::new();
