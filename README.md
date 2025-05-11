@@ -2,7 +2,7 @@ A command line FASTA parser and writer written in Rust.
 
 Usage:
 
-cargo run -- <input_file> [<output_file>] [--gc] [--stats]
+cargo run <input_file> [<output_file>] [--gc] [--stats]
 
 Supports csv, tsv, xml, and json inputs/outputs!
 
