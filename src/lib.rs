@@ -4,6 +4,7 @@ pub mod writer;
 pub mod converter;
 pub mod gc;
 pub mod stats;
+pub mod transcription;
 use std::path::Path;
 use std::io::{self, Write};
 

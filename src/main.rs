@@ -7,6 +7,7 @@ use FASTAParser::{
     gc::run_gc,
     parser,
     stats::run_stats,
+    transcription::run_transcription,
     writer::{write_csv, write_fasta, write_json, write_tsv, write_xml},
     models::Record,
 };
@@ -23,6 +24,12 @@ struct Args {
     /// Generate length & GC% stats & plots
     #[arg(long)]
     stats: bool,
+    /// Transcribe DNA to RNA (T->U)
+    #[arg(long)]
+    transcribe: bool,
+    /// Use mRNA mode (remove introns) during transcription
+    #[arg(long)]
+    mrna: bool,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -37,6 +44,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // GC
     if args.gc {
         run_gc(&args.input)?;
+        return Ok(());
+    }
+
+    // Transcription
+    if args.transcribe {
+        run_transcription(&args.input, args.mrna)?;
         return Ok(());
     }
 
