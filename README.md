@@ -1,12 +1,20 @@
+# FASTA Parser
+
 A command line FASTA parser and writer written in Rust.
 
-Usage:
+## Usage
 
+```bash
 cargo run -- <input_file> [<output_file>] [--gc] [--stats] [--transcribe] [--mrna]
+```
 
-Supports csv, tsv, xml, and json inputs/outputs!
+## Features
 
-The optional --gc flag gives the gc%.
-The optional --stats flag generates length & GC% statistics and plots.
-The optional --transcribe flag transcribes DNA to RNA (T->U).
-The optional --mrna flag removes introns during transcription using GT...AG splice sites.
+- Supports **csv**, **tsv**, **xml**, and **json** inputs/outputs!
+
+### Optional Flags
+
+- `--gc` - Gives the GC%
+- `--stats` - Generates length & GC% statistics and plots
+- `--transcribe` - Transcribes DNA to RNA (T→U)
+- `--mrna` - Removes introns during transcription using GT...AG splice sites
