@@ -20,3 +20,5 @@ cargo run -- <input_file> [<output_file>] [--gc] [--stats] [--transcribe] [--mrn
 - `--mrna` - Removes introns during transcription using GT...AG splice sites
 
 The transcription and mRNA featres currently only support FASTA files.
+
+Todo: A basic UI
